@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
 import { z } from 'zod';
 
-const orderCreateZodSchema = z.object({
+const reviewCreateZodSchema = z.object({
   body: z.object({
-    cow: z
+    review: z.string({ required_error: 'Review description is Required' }),
+    user: z
       .string({ required_error: 'Invalid cow id' })
       .refine(mongoose.isValidObjectId),
-    buyer: z
+    book: z
       .string({ required_error: 'Invalid buyer id' })
       .refine(mongoose.isValidObjectId),
   }),
 });
-export const OrderZodSchema = {
-  orderCreateZodSchema,
+export const ReviewZodSchema = {
+  reviewCreateZodSchema,
 };

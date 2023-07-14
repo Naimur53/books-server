@@ -6,8 +6,7 @@ import sendResponse from '../../../shared/sendResponse';
 import { IUser } from '../user/user.interface';
 import { AuthService } from './auth.service';
 import config from '../../../config';
-import { ILoginResponse } from '../admin/admin.interface';
-import { IRefreshTokenResponse } from './auth.Interface';
+import { ILoginResponse, IRefreshTokenResponse } from './auth.Interface';
 
 const createUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {

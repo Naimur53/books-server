@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "D:\\next level\\book-server\\logs\\winston\\errors\\.8c6e0688de19e6d574fcc3d554a27e47be71e893-audit.json",
+    "files": [
+        {
+            "date": 1689342795987,
+            "name": "D:\\next level\\book-server\\logs\\winston\\errors\\phu-2023-14-07-19-error.log",
+            "hash": "d698a78b2a4e7585b89acf3f58d86f0d39b6ad86eab67509e1382810b49bb0ec"
+        },
+        {
+            "date": 1689343385949,
+            "name": "D:\\next level\\book-server\\logs\\winston\\errors\\phu-2023-14-07-20-error.log",
+            "hash": "924e6b86f1ffe80a3584e1a02e0d1d828b03b7a334e2267edb553bd3abb7d5fe"
+        }
+    ],
+    "hashType": "sha256"
+}

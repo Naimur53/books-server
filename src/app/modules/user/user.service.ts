@@ -30,6 +30,7 @@ const updateUser = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found !');
   }
 
+  // eslint-disable-next-line no-unused-vars
   const { name, password, ...userData } = payload;
 
   const updatedUserData: Partial<IUser> = { ...userData };
@@ -41,32 +42,6 @@ const updateUser = async (
       Number(config.bycrypt_salt_rounds)
     );
   }
-
-  // handle if user role change
-  if (isExist.role !== updatedUserData.role) {
-    if (updatedUserData.role === 'buyer') {
-      if (!updatedUserData.budget) {
-        throw new ApiError(
-          httpStatus.BAD_REQUEST,
-          'minimum budget require to change role to buyer'
-        );
-      } else {
-        // update role to buyer so change income to 0
-        updatedUserData.income = 0;
-      }
-    } else if (updatedUserData.role === 'seller') {
-      updatedUserData.budget = 0;
-    }
-  }
-  // dynamically handling
-
-  if (name && Object.keys(name).length > 0) {
-    Object.keys(name).forEach(key => {
-      const nameKey = `name.${key}` as keyof Partial<IUser>; // `name.fisrtName`
-      (updatedUserData as any)[nameKey] = name[key as keyof typeof name];
-    });
-  }
-
   const result = await User.findByIdAndUpdate(id, updatedUserData, {
     new: true,
   });

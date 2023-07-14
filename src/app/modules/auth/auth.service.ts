@@ -5,8 +5,11 @@ import { User } from '../user/user.model';
 import config from '../../../config';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { Secret } from 'jsonwebtoken';
-import { ILogin, ILoginResponse } from '../admin/admin.interface';
-import { IRefreshTokenResponse } from './auth.Interface';
+import {
+  ILogin,
+  ILoginResponse,
+  IRefreshTokenResponse,
+} from './auth.Interface';
 
 const createUser = async (
   user: IUser

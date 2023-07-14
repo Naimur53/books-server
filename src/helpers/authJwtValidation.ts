@@ -4,10 +4,7 @@ import { jwtHelpers } from './jwtHelpers';
 import config from '../config';
 import { Secret } from 'jsonwebtoken';
 
-function authJwtValidation(
-  token: string | undefined,
-  requiredRoles: string[]
-): any {
+function authJwtValidation(token: string | undefined): any {
   // if no token found
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
@@ -17,10 +14,10 @@ function authJwtValidation(
 
   verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
-  // role guard
-  if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
-  }
+  // // role guard
+  // if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
+  //   throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
+  // }
   return verifiedUser;
 }
 export default authJwtValidation;
