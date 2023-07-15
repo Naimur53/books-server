@@ -12,6 +12,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+      minlength: 6,
       select: 0,
     },
     name: {
@@ -28,10 +29,10 @@ const userSchema = new Schema<IUser>(
 );
 userSchema.statics.isUserExist = async function (
   email: string
-): Promise<Pick<IUser, '_id' | 'email' | 'password'> | null> {
+): Promise<Pick<IUser, '_id' | 'email' | 'password' | 'name'> | null> {
   return await User.findOne(
     { email },
-    { email: 1, password: 1, role: 1, _id: 1 }
+    { email: 1, password: 1, name: 1, _id: 1 }
   );
 };
 userSchema.statics.isPasswordMatched = async function (

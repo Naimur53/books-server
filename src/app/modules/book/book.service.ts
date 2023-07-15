@@ -13,7 +13,7 @@ const getAllBook = async (
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IBook[]>> => {
   // all Book
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, publishedDate, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
 
@@ -21,8 +21,13 @@ const getAllBook = async (
 
   //   search text
   if (searchTerm) {
+    const wihtoutPublished = bookSearchableFields.slice(
+      0,
+      bookSearchableFields.length - 1
+    );
+
     andConditions.push({
-      $or: bookSearchableFields.map(field => ({
+      $or: wihtoutPublished.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: 'i',
@@ -43,14 +48,21 @@ const getAllBook = async (
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
-  const whereConditions =
+  console.log(sortConditions);
+  const whereConditions: any =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
+  // Date query
+  if (publishedDate) {
+    whereConditions['publishedDate'] = publishedDate;
+  }
+  console.log(whereConditions);
+
   const result = await Book.find(whereConditions)
-    .sort(sortConditions)
+    .sort({ _id: -1 })
     .skip(skip)
     .limit(limit)
-    .populate('seller');
+    .populate('creator');
 
   const total = await Book.countDocuments();
 

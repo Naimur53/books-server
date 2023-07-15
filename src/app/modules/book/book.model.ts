@@ -26,6 +26,7 @@ export const genreEnumElement = [
 const bookSchema = new Schema<IBook>({
   title: { type: String, required: true },
   author: { type: String, required: true },
+  publishedDate: { type: Date, required: true },
   genre: {
     type: String,
     enum: genreEnumElement,

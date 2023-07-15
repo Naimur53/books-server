@@ -4,6 +4,9 @@ import { User } from './user.model';
 import ApiError from '../../../errors/ApiError';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
+import { ILoginResponse } from '../auth/auth.Interface';
+import { Secret } from 'jsonwebtoken';
 
 const getAllUser = async (): Promise<IUser[] | null> => {
   // all users
@@ -11,14 +14,35 @@ const getAllUser = async (): Promise<IUser[] | null> => {
 
   return allUsers;
 };
-const getUserById = async (id: string): Promise<IUser | null> => {
+const getUserById = async (id: string): Promise<ILoginResponse | null> => {
   //  users
   const user = await User.findById(id);
 
   if (!user) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User not found!');
   }
-  return user;
+
+  // eslint-disable-next-line no-unused-vars
+  const { password, createAt, updatedAt, _id, email, name } = user;
+
+  //create access token & refresh token
+  const accessToken = jwtHelpers.createToken(
+    { _id, email },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  const refreshToken = jwtHelpers.createToken(
+    { _id, email },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string
+  );
+
+  return {
+    user: { email, _id, name },
+    accessToken,
+    refreshToken,
+  };
 };
 const updateUser = async (
   id: string,

@@ -26,10 +26,9 @@ const genre: [string, ...string[]] = [
 const bookZodSchema = z.object({
   body: z.object({
     title: z.string().nonempty('Name is required'),
-    author: z.number({ required_error: 'Age must be a number' }),
-    price: z.number().positive('Price must be a positive number'),
-    genre: z.enum([...genre], { required_error: 'Invalid location' }),
-    publishedData: z.date({ required_error: 'published date is required ' }),
+    author: z.string({ required_error: 'Age must be a number' }),
+    genre: z.enum([...genre], { required_error: 'Invalid genre' }),
+    publishedDate: z.string({ required_error: 'published date is required ' }),
     creator: z
       .string({ required_error: 'Invalid user id' })
       .refine(mongoose.isValidObjectId),
@@ -40,13 +39,12 @@ const bookZodSchema = z.object({
 const bookUpdateZodSchema = z.object({
   body: z.object({
     title: z.string().nonempty('Name is required').optional(),
-    author: z.number({ required_error: 'Age must be a number' }).optional(),
-    price: z.number().positive('Price must be a positive number').optional(),
+    author: z.string({ required_error: 'Age must be a number' }).optional(),
     genre: z
       .enum([...genre], { required_error: 'Invalid location' })
       .optional(),
-    publishedData: z
-      .date({ required_error: 'published date is required ' })
+    publishedDate: z
+      .string({ required_error: 'published date is required ' })
       .optional(),
     creator: z
       .string({ required_error: 'Invalid user id' })

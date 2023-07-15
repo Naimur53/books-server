@@ -1,4 +1,4 @@
-import { IReview } from './order.interface';
+import { IReview } from './review.interface';
 import { Review } from './review.model';
 
 const createReview = async (payload: IReview): Promise<IReview | null> => {

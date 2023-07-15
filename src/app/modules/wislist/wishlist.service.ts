@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { IWishlist } from './wishlist.Interface';
 import { Wishlist } from './wishlist.model';
 
@@ -20,13 +22,22 @@ const getSingleUserWishlist = async (
   userId: string
 ): Promise<IWishlist[] | null> => {
   const getAllWishlist = await Wishlist.find({ user: userId }).populate([
-    { path: 'book' },
+    { path: 'book', populate: { path: 'creator' } },
+    { path: 'user' },
   ]);
 
   return getAllWishlist;
+};
+const deleteSingleWishlist = async (id: string): Promise<IWishlist | null> => {
+  const result = await Wishlist.findByIdAndDelete(id);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Wish not found!');
+  }
+  return result;
 };
 export const WishlistService = {
   createWishlist,
   getAllWishlist,
   getSingleUserWishlist,
+  deleteSingleWishlist,
 };

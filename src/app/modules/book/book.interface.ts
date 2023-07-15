@@ -35,6 +35,7 @@ export type IBookFilters = {
   searchTerm?: string;
   maxPrice?: string;
   minPrice?: string;
+  publishedDate?: string;
 };
 
 export type IBookFilterByPrice = {

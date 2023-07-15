@@ -3,8 +3,8 @@ import { RequestHandler } from 'express-serve-static-core';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { IReview } from './order.interface';
 import { ReviewService } from './review.service';
+import { IReview } from './review.interface';
 
 const createReview: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {

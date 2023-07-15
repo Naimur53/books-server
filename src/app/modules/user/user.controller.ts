@@ -6,6 +6,7 @@ import sendResponse from '../../../shared/sendResponse';
 import { IUser } from './user.interface';
 import { UserService } from './user.service';
 import { JwtPayload } from 'jsonwebtoken';
+import { ILoginResponse } from '../auth/auth.Interface';
 
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -25,7 +26,7 @@ const getUserByTokenId: RequestHandler = catchAsync(
     const userInfo = req.user as JwtPayload;
     const result = await UserService.getUserById(userInfo._id);
 
-    sendResponse<IUser>(res, {
+    sendResponse<ILoginResponse>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'user retrieved successfully!',
@@ -40,7 +41,7 @@ const getUserById: RequestHandler = catchAsync(
 
     const result = await UserService.getUserById(id);
 
-    sendResponse<IUser>(res, {
+    sendResponse<ILoginResponse>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'user retrieved successfully!',

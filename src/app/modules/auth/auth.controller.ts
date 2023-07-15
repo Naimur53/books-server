@@ -3,7 +3,6 @@ import { RequestHandler } from 'express-serve-static-core';
 import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { IUser } from '../user/user.interface';
 import { AuthService } from './auth.service';
 import config from '../../../config';
 import { ILoginResponse, IRefreshTokenResponse } from './auth.Interface';
@@ -11,9 +10,18 @@ import { ILoginResponse, IRefreshTokenResponse } from './auth.Interface';
 const createUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const data = req.body;
-    const result = await AuthService.createUser(data);
+    const output = await AuthService.createUser(data);
+    const { refreshToken, ...result } = output;
 
-    sendResponse<Omit<IUser, 'password'>>(res, {
+    // set refresh token into cookie
+
+    const cookieOptions = {
+      secure: config.env === 'production',
+      httpOnly: true,
+    };
+
+    res.cookie('refreshToken', refreshToken, cookieOptions);
+    sendResponse<ILoginResponse>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'user created successfully!',

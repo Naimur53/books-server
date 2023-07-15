@@ -2,7 +2,7 @@ import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './config/index';
-import { logger } from './shared/logger';
+// import { logger } from './shared/logger';
 process.on('uncaughtException', error => {
   console.log(error);
   process.exit(1);
@@ -12,6 +12,7 @@ let server: Server;
 
 async function bootstrap() {
   try {
+    console.log(`🛢   Database is connecting...`);
     await mongoose.connect(config.database_url as string);
     console.log(`🛢   Database is connected successfully`);
 

@@ -11,15 +11,37 @@ import {
   IRefreshTokenResponse,
 } from './auth.Interface';
 
-const createUser = async (
-  user: IUser
-): Promise<Omit<IUser, 'password'> | null> => {
+const createUser = async (user: IUser): Promise<ILoginResponse> => {
   // checking is user buyer
+  try {
+    const newUser = await User.create(user);
+    // eslint-disable-next-line no-unused-vars
+    const { password, createAt, updatedAt, _id, email, name } =
+      newUser.toObject();
 
-  const newUser = await User.create(user);
+    //create access token & refresh token
+    const accessToken = jwtHelpers.createToken(
+      { _id, email },
+      config.jwt.secret as Secret,
+      config.jwt.expires_in as string
+    );
+
+    const refreshToken = jwtHelpers.createToken(
+      { _id, email },
+      config.jwt.refresh_secret as Secret,
+      config.jwt.refresh_expires_in as string
+    );
+
+    return {
+      user: { email, _id, name },
+      accessToken,
+      refreshToken,
+    };
+  } catch (err) {
+    console.log(err);
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User Already exits ');
+  }
   // eslint-disable-next-line no-unused-vars
-  const { password, ...data } = newUser.toObject();
-  return data;
 };
 
 const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
@@ -40,7 +62,7 @@ const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
 
   //create access token & refresh token
 
-  const { email, _id } = isUserExist;
+  const { email, _id, name } = isUserExist;
   const accessToken = jwtHelpers.createToken(
     { _id, email },
     config.jwt.secret as Secret,
@@ -54,6 +76,7 @@ const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
   );
 
   return {
+    user: { email, _id, name },
     accessToken,
     refreshToken,
   };

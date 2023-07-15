@@ -18,8 +18,8 @@ const globalErrorHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   config.env === 'development'
-    ? logger(`🐱‍🏍 globalErrorHandler ~~`, { error })
-    : logger(`🐱‍🏍 globalErrorHandler ~~`, error);
+    ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
+    : console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
   let statusCode = 500;
   let message = 'Something went wrong !';
