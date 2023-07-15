@@ -48,7 +48,6 @@ const getAllBook = async (
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
-  console.log(sortConditions);
   const whereConditions: any =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
@@ -56,7 +55,6 @@ const getAllBook = async (
   if (publishedDate) {
     whereConditions['publishedDate'] = publishedDate;
   }
-  console.log(whereConditions);
 
   const result = await Book.find(whereConditions)
     .sort({ _id: -1 })

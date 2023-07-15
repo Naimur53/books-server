@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IReview, IReviewModel } from './order.interface';
+import { IReview, IReviewModel } from './review.interface';
 
 const reviewSchema = new Schema<IReview>({
   review: {
