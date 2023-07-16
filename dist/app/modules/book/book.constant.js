@@ -6,6 +6,6 @@ exports.bookSearchableFields = [
     'author',
     'title',
     'genre',
-    'publishedDate',
+    'publishedYear',
 ];
 exports.bookFilterByDate = [''];

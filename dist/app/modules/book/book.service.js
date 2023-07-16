@@ -29,9 +29,10 @@ const book_model_1 = require("./book.model");
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const book_constant_1 = require("./book.constant");
+const moment_timezone_1 = __importDefault(require("moment-timezone"));
 const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     // all Book
-    const { searchTerm, publishedDate } = filters, filtersData = __rest(filters, ["searchTerm", "publishedDate"]);
+    const { searchTerm, publishedYear } = filters, filtersData = __rest(filters, ["searchTerm", "publishedYear"]);
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelpers.calculatePagination(paginationOptions);
     const andConditions = [];
     //   search text
@@ -60,8 +61,18 @@ const getAllBook = (filters, paginationOptions) => __awaiter(void 0, void 0, voi
     }
     const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
     // Date query
-    if (publishedDate) {
-        whereConditions['publishedDate'] = publishedDate;
+    if (publishedYear) {
+        // Create a range for the desired year
+        moment_timezone_1.default.tz.setDefault('Asia/Dhaka');
+        const startDate = new Date(Number(publishedYear), 0, 1); // January 1st of the desired year
+        const endDate = new Date(Number(publishedYear) + 1, 0, 1);
+        const startDateTimeZone = (0, moment_timezone_1.default)(startDate);
+        const endDateTimeZone = (0, moment_timezone_1.default)(endDate);
+        whereConditions['publishedDate'] = {
+            $gt: startDateTimeZone,
+            $lt: endDateTimeZone,
+        };
+        console.log(whereConditions);
     }
     const result = yield book_model_1.Book.find(whereConditions)
         .sort({ _id: -1 })
