@@ -67,6 +67,7 @@ const getAllBook = async (
       $gt: startDateTimeZone,
       $lt: endDateTimeZone,
     };
+    console.log(whereConditions);
   }
 
   const result = await Book.find(whereConditions)
