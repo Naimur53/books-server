@@ -54,12 +54,18 @@ const getAllBook = async (
   // Date query
   if (publishedYear) {
     // Create a range for the desired year
+    const convertToTimeZone = (date: Date, timeZone: string): Date => {
+      const dateStr = date.toLocaleString('en-US', { timeZone, hour12: false });
+      return new Date(dateStr);
+    };
 
     const startDate = new Date(Number(publishedYear), 0, 1); // January 1st of the desired year
     const endDate = new Date(Number(publishedYear) + 1, 0, 1);
+    const startDateTimeZone = convertToTimeZone(startDate, 'Asia/Dhaka');
+    const endDateTimeZone = convertToTimeZone(endDate, 'Asia/Dhaka');
     whereConditions['publishedDate'] = {
-      $gt: startDate,
-      $lt: endDate,
+      $gt: startDateTimeZone,
+      $lt: endDateTimeZone,
     };
   }
 
