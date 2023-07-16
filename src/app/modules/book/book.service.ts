@@ -57,7 +57,6 @@ const getAllBook = async (
 
     const startDate = new Date(Number(publishedYear), 0, 1); // January 1st of the desired year
     const endDate = new Date(Number(publishedYear) + 1, 0, 1);
-    console.log(startDate.getFullYear(), endDate.getFullYear(), publishedYear);
     whereConditions['publishedDate'] = {
       $gt: startDate,
       $lt: endDate,
