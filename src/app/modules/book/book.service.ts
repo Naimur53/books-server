@@ -7,6 +7,7 @@ import { Book } from './book.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { bookSearchableFields } from './book.constant';
+import moment from 'moment-timezone';
 
 const getAllBook = async (
   filters: IBookFilters,
@@ -54,15 +55,13 @@ const getAllBook = async (
   // Date query
   if (publishedYear) {
     // Create a range for the desired year
-    const convertToTimeZone = (date: Date, timeZone: string): Date => {
-      const dateStr = date.toLocaleString('en-US', { timeZone, hour12: false });
-      return new Date(dateStr);
-    };
+
+    moment.tz.setDefault('Asia/Dhaka');
 
     const startDate = new Date(Number(publishedYear), 0, 1); // January 1st of the desired year
     const endDate = new Date(Number(publishedYear) + 1, 0, 1);
-    const startDateTimeZone = convertToTimeZone(startDate, 'Asia/Dhaka');
-    const endDateTimeZone = convertToTimeZone(endDate, 'Asia/Dhaka');
+    const startDateTimeZone = moment(startDate);
+    const endDateTimeZone = moment(endDate);
     whereConditions['publishedDate'] = {
       $gt: startDateTimeZone,
       $lt: endDateTimeZone,

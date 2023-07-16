@@ -4,6 +4,7 @@ import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routes from './app/routes';
 import cookieParser from 'cookie-parser';
+import moment from 'moment-timezone';
 const app: Application = express();
 
 app.use(cors());
@@ -20,6 +21,12 @@ app.use('/api/v1', routes);
 // app.get('/', async (req: Request, res: Response, next: NextFunction) => {
 //   throw new Error('Testing Error logger')
 // })
+app.get('/current-time', (req, res) => {
+  const currentDateTime = new Date();
+  moment.tz.setDefault('Asia/Dhaka');
+  const mon = moment(currentDateTime);
+  res.json({ currentTime: currentDateTime, mon });
+});
 
 //global error handler
 app.use(globalErrorHandler);
