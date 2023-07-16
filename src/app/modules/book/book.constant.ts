@@ -3,6 +3,6 @@ export const bookSearchableFields = [
   'author',
   'title',
   'genre',
-  'publishedDate',
+  'publishedYear',
 ];
 export const bookFilterByDate = [''];

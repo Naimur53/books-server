@@ -13,7 +13,7 @@ const getAllBook = async (
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IBook[]>> => {
   // all Book
-  const { searchTerm, publishedDate, ...filtersData } = filters;
+  const { searchTerm, publishedYear, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
 
@@ -52,8 +52,16 @@ const getAllBook = async (
     andConditions.length > 0 ? { $and: andConditions } : {};
 
   // Date query
-  if (publishedDate) {
-    whereConditions['publishedDate'] = publishedDate;
+  if (publishedYear) {
+    // Create a range for the desired year
+
+    const startDate = new Date(Number(publishedYear), 0, 1); // January 1st of the desired year
+    const endDate = new Date(Number(publishedYear) + 1, 0, 1);
+    console.log(startDate.getFullYear(), endDate.getFullYear(), publishedYear);
+    whereConditions['publishedDate'] = {
+      $gt: startDate,
+      $lt: endDate,
+    };
   }
 
   const result = await Book.find(whereConditions)
