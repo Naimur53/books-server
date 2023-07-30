@@ -2,18 +2,18 @@ import { SortOrder } from 'mongoose';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-import { IProduct, IProductFilters } from './product.interface';
-import { Product } from './product.model';
+import { IBook, IBookFilters } from './book.interface';
+import { Book } from './book.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
-import { ProductSearchableFields } from './product.constant';
+import { bookSearchableFields } from './book.constant';
 import moment from 'moment-timezone';
 
-const getAllProduct = async (
-  filters: IProductFilters,
+const getAllBook = async (
+  filters: IBookFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<IProduct[]>> => {
-  // all Product
+): Promise<IGenericResponse<IBook[]>> => {
+  // all Book
   const { searchTerm, publishedYear, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
@@ -22,9 +22,9 @@ const getAllProduct = async (
 
   //   search text
   if (searchTerm) {
-    const wihtoutPublished = ProductSearchableFields.slice(
+    const wihtoutPublished = bookSearchableFields.slice(
       0,
-      ProductSearchableFields.length - 1
+      bookSearchableFields.length - 1
     );
 
     andConditions.push({
@@ -69,12 +69,13 @@ const getAllProduct = async (
     console.log(whereConditions);
   }
 
-  const result = await Product.find(whereConditions)
+  const result = await Book.find(whereConditions)
     .sort({ _id: -1 })
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate('creator');
 
-  const total = await Product.countDocuments();
+  const total = await Book.countDocuments();
 
   return {
     meta: {
@@ -86,42 +87,43 @@ const getAllProduct = async (
   };
 };
 
-const createProduct = async (payload: IProduct): Promise<IProduct | null> => {
-  const newProduct = await Product.create(payload);
-  return newProduct;
+const createBook = async (payload: IBook): Promise<IBook | null> => {
+  const newBook = await Book.create(payload);
+  return newBook;
 };
 
-const updateProduct = async (
+const updateBook = async (
   id: string,
-  payload: Partial<IProduct>
-): Promise<IProduct | null> => {
-  const result = await Product.findOneAndUpdate({ _id: id }, payload, {
+  payload: Partial<IBook>
+): Promise<IBook | null> => {
+  if (payload.creator) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'sorry you cannot change creator'
+    );
+  }
+  const result = await Book.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });
   return result;
 };
-const getRandom = async (): Promise<IProduct[] | null> => {
-  const result = await Product.aggregate([{ $sample: { size: 6 } }]);
-  return result;
-};
-const getSingleProduct = async (id: string): Promise<IProduct | null> => {
-  const result = await Product.findById(id);
+const getSingleBook = async (id: string): Promise<IBook | null> => {
+  const result = await Book.findById(id).populate('creator');
   return result;
 };
 
-const deleteProduct = async (id: string): Promise<IProduct | null> => {
-  const result = await Product.findByIdAndDelete(id);
+const deleteBook = async (id: string): Promise<IBook | null> => {
+  const result = await Book.findByIdAndDelete(id);
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found!');
   }
   return result;
 };
 
-export const ProductService = {
-  getAllProduct,
-  createProduct,
-  updateProduct,
-  getSingleProduct,
-  deleteProduct,
-  getRandom,
+export const BookService = {
+  getAllBook,
+  createBook,
+  updateBook,
+  getSingleBook,
+  deleteBook,
 };
