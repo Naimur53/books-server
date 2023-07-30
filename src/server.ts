@@ -12,7 +12,7 @@ let server: Server;
 
 async function bootstrap() {
   try {
-    console.log(`🛢   Database is connecting...`);
+    console.log(`🛢   Database is connecting...  `);
     await mongoose.connect(config.database_url as string);
     console.log(`🛢   Database is connected successfully`);
 
